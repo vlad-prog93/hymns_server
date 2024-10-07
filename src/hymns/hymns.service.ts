@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Hymn } from 'src/hymns/hymns.schema';
 import { CreateHymnDto } from 'src/hymns/dto/create-hymn.dto';
+import { UpdateHymnDto } from 'src/hymns/dto/update-hymn.dto';
 
 
 @Injectable()
@@ -25,5 +26,9 @@ export class HymnsService {
 
   async delete(id: string): Promise<any> {
     return this.hymnModel.findByIdAndDelete(id)
+  }
+
+  async toUpdate(hymn: UpdateHymnDto): Promise<Hymn> {
+    return this.hymnModel.findByIdAndUpdate({ _id: hymn._id }, { ...hymn }, { new: true })
   }
 }
