@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, StreamableFile } from '@nestjs/common';
-import { writeFileSync, createReadStream } from 'fs'
+import { Controller, Get, Post, Body, Param, Delete, Patch, StreamableFile, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { writeFileSync, createReadStream, readFileSync } from 'fs'
 import { CreateHymnDto } from 'src/hymns/dto/create-hymn.dto';
 import { UpdateHymnDto } from 'src/hymns/dto/update-hymn.dto';
 import { HymnsService } from 'src/hymns/hymns.service';
@@ -29,6 +30,12 @@ export class HymnsController {
   @Post()
   add(@Body() createHymnDto: CreateHymnDto) {
     return this.HymnsService.create(createHymnDto)
+  }
+
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('/database')
+  addFile(@UploadedFile() file) {
+    console.log(file)
   }
 
   @Delete()
