@@ -35,7 +35,20 @@ export class HymnsController {
   @UseInterceptors(FileInterceptor('file'))
   @Post('/database')
   addFile(@UploadedFile() file) {
-    console.log(file)
+    try {
+
+      const hymns = JSON.parse(file.buffer.toString()).map(hymn => {
+        hymn._id && delete hymn._id
+        hymn.id && delete hymn.id
+        return hymn
+      })
+      hymns.forEach((hymn: CreateHymnDto) => {
+        this.HymnsService.create(hymn)
+      });
+      return this.HymnsService.getAll()
+    } catch (error) {
+      return error
+    }
   }
 
   @Delete()
